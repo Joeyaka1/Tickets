@@ -1,90 +1,52 @@
-/* Body styling */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f3f4f6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-/* Login form */
-form {
-  background: #fff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-}
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
 
-/* Inloggen */
-form h1 {
-  margin-bottom: 20px;
-  text-align: center;
-  color: #111827;
-}
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-/* Welkom student/docent */
-form h2 {
-  margin-bottom: 20px;
-  text-align: center;
-  color: #111827;
-}
+        .button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-/* Labels */
-form label {
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #374151;
-}
+        .student-button {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-/* Input velden */
-form input {
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
+        .student-button:hover {
+            background-color: #45a049;
+        }
 
-form input:focus {
-  border-color: #3b82f6;
-}
+        .teacher-button {
+            background-color: #008CBA;
+            color: white;
+        }
 
-/* Link om nieuw account te maken */
-form a {
-  font-size: 0.9rem;
-  margin-bottom: 20px;
-  text-align: left;
-  display: inline-block;
-  color: #3b82f6;
-  text-decoration: none;
-}
-
-form a:hover {
-  text-decoration: underline;
-}
-
-/* Button */
-form button {
-  padding: 12px;
-  background-color: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-form button:hover {
-  background-color: #2563eb;
-}
+        .teacher-button:hover {
+            background-color: #007B9E;
+        }

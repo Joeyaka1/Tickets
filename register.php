@@ -5,19 +5,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $naam = $_POST['naam'];
     $email = $_POST['email'];
     $wachtwoord = $_POST['wachtwoord'];
-    $rol = $_POST['rol']; // 0 = student, 1 = docent (later omwisselen)
-    $idklas = $_POST['idklas']; // optioneel, alleen bij studenten
+    $rol = $_POST['rol']; // 0 = student, 1 = docent
+    $idklas = !empty($_POST['idklas']) ? $_POST['idklas'] : null; // als leeg → null
 
+    // wachtwoord beveiligen
     $hashedPassword = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
+    // Controleer of docent of student
     if ($rol == 1) {
-        $stmt = $conn->prepare("INSERT INTO user (naam, email, wachtwoord, rol) VALUES (?, ?, ?, ?)");
+        // docent → idklas is NULL
+        $stmt = $conn->prepare("INSERT INTO user (naam, email, wachtwoord, rol, idklas) VALUES (?, ?, ?, ?, NULL)");
         $stmt->bind_param("sssi", $naam, $email, $hashedPassword, $rol);
     } else {
+        // student → moet geldige idklas hebben
+        if ($idklas === null) {
+            echo "<script>alert('Selecteer een klas voor studenten!'); window.history.back();</script>";
+            exit;
+        }
+
+        // controleer of klas bestaat
+        $check = $conn->prepare("SELECT idklas FROM klas WHERE idklas = ?");
+        $check->bind_param("i", $idklas);
+        $check->execute();
+        $checkResult = $check->get_result();
+
+        if ($checkResult->num_rows === 0) {
+            echo "<script>alert('De opgegeven klas bestaat niet!'); window.history.back();</script>";
+            exit;
+        }
+
         $stmt = $conn->prepare("INSERT INTO user (naam, email, wachtwoord, rol, idklas) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssii", $naam, $email, $hashedPassword, $rol, $idklas);
     }
 
+    // uitvoeren
     if ($stmt->execute()) {
         echo "<script>alert('Account succesvol aangemaakt!'); window.location='login_pagina.php';</script>";
     } else {
@@ -27,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="nl">

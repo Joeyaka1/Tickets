@@ -1,3 +1,42 @@
+<?php 
+session_start();
+include "database.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $gebruikersnaam = $_POST['gebruikersnaam'];
+    $wachtwoord = $_POST['wachtwoord'];
+
+    // Gebruiker zoeken op naam of e-mail
+    $stmt = $conn->prepare("SELECT * FROM user WHERE naam = ? OR email = ?");
+    $stmt->bind_param("ss", $gebruikersnaam, $gebruikersnaam);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $row = $result->fetch_assoc();
+
+        // Controleer wachtwoord (je kunt password_hash gebruiken bij registratie)
+        if (password_verify($wachtwoord, $row['wachtwoord'])) {
+            $_SESSION['iduser'] = $row['iduser'];
+            $_SESSION['naam'] = $row['naam'];
+            $_SESSION['rol'] = $row['rol'];
+
+            // Doorsturen op basis van rol
+            if ($row['rol'] == 1) {
+                header("Location: docent.php");
+            } else {
+                header("Location: student.php");
+            }
+            exit;
+        } else {
+            $error = "Onjuist wachtwoord.";
+        }
+    } else {
+        $error = "Gebruiker niet gevonden.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -64,7 +103,7 @@
 <body>
 
     <div class="login-container">
-        <h2>Welcome</h2>
+        <h2>Welkom</h2>
         <p>Log in als:</p>
         <a href="student.php"> <button class="button student-button">Student</button> </a>
         <a href="docent.php"> <button class="button teacher-button">Docent</button> </a>

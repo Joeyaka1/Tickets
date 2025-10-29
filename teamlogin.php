@@ -1,38 +1,39 @@
 <?php
-require 'db_con.php';
 session_start();
+require 'db_con.php';
+
+$msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"]);
-    $wachtwoord = $_POST["wachtwoord"];
-    $login_type = $_POST["login_type"]; // 'student' of 'docent'
+    $wachtwoord = trim($_POST["wachtwoord"]);
+    $rol = $_POST["rol"]; // 0 = student, 1 = docent
 
-    $stmt = $pdo->prepare("SELECT * FROM user WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    // Controleer of gebruiker bestaat
+    $stmt = $mysqli->prepare("SELECT * FROM user WHERE email = ? AND rol = ?");
+    $stmt->bind_param("si", $email, $rol);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($user && password_verify($wachtwoord, $user["wachtwoord"])) {
-        // Controleer of de gebruiker overeenkomt met gekozen type
-        // Stel: rol 0 = student, rol 1 = docent
-        if (($login_type == 'student' && $user['rol'] == 0) || 
-            ($login_type == 'docent' && $user['rol'] == 1)) {
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
 
-            $_SESSION["iduser"] = $user["iduser"];
-            $_SESSION["naam"] = $user["naam"];
+        // Controleer wachtwoord
+        if (password_verify($wachtwoord, $user["wachtwoord"])) {
+            $_SESSION["user_id"] = $user["iduser"];
             $_SESSION["rol"] = $user["rol"];
 
-            // Doorsturen naar juiste dashboard
             if ($user["rol"] == 1) {
-                header("Location: dashboard_docent.php");
+                header("Location: docent.php");
             } else {
-                header("Location: dashboard_student.php");
+                header("Location: student.php");
             }
             exit;
         } else {
-            $error = "Je hebt op de verkeerde login-knop geklikt.";
+            $msg = "Onjuist wachtwoord.";
         }
     } else {
-        $error = "Ongeldige inloggegevens.";
+        $msg = "Gebruiker niet gevonden of rol klopt niet.";
     }
 }
 ?>
@@ -43,26 +44,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <meta charset="UTF-8">
 <title>Inloggen</title>
 <style>
-    body { font-family: Arial, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    form { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-    input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button { width: 48%; padding: 10px; border: none; border-radius: 5px; color: white; cursor: pointer; }
-    .student { background-color: #2196F3; }
-    .docent { background-color: #4CAF50; }
-    .buttons { display: flex; justify-content: space-between; margin-top: 10px; }
-    .error { color: red; text-align: center; }
+body { font-family: Arial; background: #f7f7f7; display: flex; justify-content: center; align-items: center; height: 100vh; }
+form { background: white; padding: 30px; border-radius: 10px; width: 300px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+button { background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; }
+button:hover { background: #45a049; }
+p { text-align: center; color: red; }
+.role-buttons { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.role-buttons button { width: 48%; background: #2196F3; }
+.role-buttons button:hover { background: #0b7dda; }
 </style>
 </head>
 <body>
+
 <form method="post">
-    <h2>Inloggen</h2>
-    <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+    <h2>Team Login</h2>
+    <?php if (!empty($msg)) echo "<p>$msg</p>"; ?>
+    
     <input type="email" name="email" placeholder="E-mail" required>
     <input type="password" name="wachtwoord" placeholder="Wachtwoord" required>
-    <div class="buttons">
-        <button type="submit" name="login_type" value="student" class="student">Student</button>
-        <button type="submit" name="login_type" value="docent" class="docent">Docent</button>
+
+    <div class="role-buttons">
+        <button type="submit" name="rol" value="0">Inloggen als Student</button>
+        <button type="submit" name="rol" value="1">Inloggen als Docent</button>
     </div>
 </form>
+
 </body>
 </html>

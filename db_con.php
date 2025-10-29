@@ -4,10 +4,11 @@ $dbname = "planning";
 $user = "root";
 $pass = "password";
 
-try {
-    $pdo = new PDO("mysql:host=$server;dbname=$dbname;charset=utf8", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Databaseverbinding mislukt: " . $e->getMessage());
+$mysqli = new mysqli($server, $user, $pass, $dbname);
+
+// Check connection
+if ($mysqli -> connect_errno) {
+  echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+  exit();
 }
 ?>

@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user["rol"] == 1) {
                 header("Location: docent.php");
             } else {
-                header("Location: student.php");
+                header("Location: planningbord.php");
             }
             exit;
         } else {

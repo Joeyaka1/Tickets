@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"]);
     $wachtwoord = password_hash($_POST["wachtwoord"], PASSWORD_DEFAULT);
     $rol = 1; // 1 = docent/admin
-    $idklas = null; // docent heeft geen klas
+    $idklas = 1; // docent heeft geen klas
 
     // Controleer of e-mail al bestaat
     $check = $mysqli->prepare("SELECT * FROM user WHERE email = ?");

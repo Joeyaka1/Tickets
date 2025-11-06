@@ -21,7 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_bereikt'])) {
     $stmt->close();
 
   
-    header("Location: " . $_SERVER['PHP_SELF']);
+    echo "<script>
+
+            window.location.href = 'http://localhost/planningbord.php';
+        </script>";
     exit;
 }
 

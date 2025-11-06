@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>';
         echo "<script>
          setTimeout(function() {
-            window.location.href = 'http://localhost/docenten.php';
+            window.location.href = 'http://localhost/docent.php';
         }, 2000);
         </script>";
 

@@ -34,6 +34,7 @@ $studenten = $mysqli->query("SELECT u.iduser, u.naam, u.email, k.naam AS klasnaa
                              LEFT JOIN klas k ON u.idklas = k.idklas
                              WHERE u.rol = 0
                              ORDER BY k.naam, u.naam");
+
 ?>
 
 <!DOCTYPE html>
@@ -55,11 +56,15 @@ th { background: #f2f2f2; }
 .message { text-align: center; color: green; font-weight: bold; }
 .logout { float: right; text-decoration: none; color: white; background: #e74c3c; padding: 8px 12px; border-radius: 5px; }
 .logout:hover { background: #c0392b; }
+.Taak_Toevoegen { float: right; text-decoration: none; color: white; background: #4CAF50; padding: 8px 12px; margin: 0 10px 0 0; border-radius: 5px; }
+.Taak_Toevoegen:hover { background: #45a049; }
 </style>
 </head>
 <body>
 <div class="container">
     <a href="logout.php" class="logout">Log uit</a>
+    <a href="fakekanban_docent.php" class="Taak_Toevoegen">Taak toevoegen</a>
+    
     <h1>Docent Dashboard</h1>
     
     <?php if (!empty($msg)) echo "<p class='message'>$msg</p>"; ?>
